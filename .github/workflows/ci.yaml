@@ -1,0 +1,28 @@
+on:
+    schedule:
+        - cron: '15 * * * *'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: '3.11'
+
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+
+            - name: Run forecast
+              run: |
+                  python forecast.py \
+                    --api-host ${{ secrets.API_HOST }} \
+                    --forecast-days 7 \
+                    --records-per-day 48 \
+                    --input-label ${{ secrets.INPUT_LABEL }}
